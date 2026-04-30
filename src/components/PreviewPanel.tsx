@@ -58,9 +58,19 @@ export function PreviewPanel({ title, subtitle, content, emptyText, hideTitle }:
 
   const scrollToHeading = useCallback((index: number) => {
     if (!contentRef.current) return;
-    const nodes = contentRef.current.querySelectorAll('h1,h2,h3,h4,h5,h6');
-    nodes[index]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
+    const targetHeading = headings[index];
+    if (!targetHeading) return;
+    // Count which occurrence of this text among previous headings (handles duplicates)
+    const occurrenceIndex = headings.slice(0, index).filter(h => h.text === targetHeading.text).length;
+    // Match against DOM nodes by text, skipping code-block pseudo-headings not rendered as <h>
+    const domNodes = Array.from(contentRef.current.querySelectorAll('h1,h2,h3,h4,h5,h6'))
+      .filter(n => n.textContent?.trim() === targetHeading.text);
+    const target = domNodes[occurrenceIndex] as HTMLElement | undefined;
+    if (!target) return;
+    const container = contentRef.current;
+    const paddingTop = parseFloat(getComputedStyle(container).paddingTop) || 0;
+    container.scrollTop += target.getBoundingClientRect().top - container.getBoundingClientRect().top - paddingTop;
+  }, [headings]);
 
   const showToolbar = !hideTitle || !!content;
   const showToc = tocOpen && headings.length > 0;
@@ -102,7 +112,7 @@ export function PreviewPanel({ title, subtitle, content, emptyText, hideTitle }:
               <TocSidebar headings={headings} onScroll={scrollToHeading} />
             </Allotment.Pane>
             <Allotment.Pane minSize={200}>
-              <div className="preview-content" ref={contentRef}>
+              <div className="preview-content" ref={contentRef} style={{ height: '100%' }}>
                 {isJson(content!) ? (
                   <pre className="raw-content">{escapeHtml(content!)}</pre>
                 ) : (

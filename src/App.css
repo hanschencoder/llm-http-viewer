@@ -883,6 +883,27 @@
 }
 .toc-row:hover { background: var(--color-bg-hover); }
 
+.toc-toggle {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  padding: 0;
+  border-radius: var(--radius-sm);
+}
+.toc-toggle:hover { color: var(--color-text-primary); background: var(--color-bg-overlay); }
+
+.toc-toggle-placeholder {
+  flex-shrink: 0;
+  width: 18px;
+}
+
 .toc-label-btn {
   flex: 1;
   text-align: left;
@@ -978,6 +999,12 @@
   background: var(--color-accent);
   margin-left: var(--space-2);
   box-shadow: 0 0 6px var(--color-accent);
+}
+
+.stream-viewer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .stream-content {
