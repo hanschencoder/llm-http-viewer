@@ -18,11 +18,11 @@ function methodColor(method: string): string {
   }
 }
 
-function statusColor(status: number): string {
-  if (status >= 200 && status < 300) return '#49cc90';
-  if (status >= 300 && status < 400) return '#fca130';
-  if (status >= 400) return '#f93e3e';
-  return '#999';
+function statusClass(status: number): string {
+  if (status >= 200 && status < 300) return 'status-success';
+  if (status >= 300 && status < 400) return 'status-warning';
+  if (status >= 400) return 'status-danger';
+  return 'status-muted';
 }
 
 function truncateUrl(url: string, maxLen = 60): string {
@@ -71,7 +71,7 @@ export function EntryList({ entries, selectedId, onSelect }: Props) {
             <span className="entry-url" title={entry.url}>
               {truncateUrl(entry.url)}
             </span>
-            <span className="status-badge" style={{ color: statusColor(entry.status) }}>
+            <span className={`status-badge ${statusClass(entry.status)}`}>
               {entry.status}
             </span>
             {entry.isStreaming && <span className="stream-badge" title="流式响应">流</span>}

@@ -114,8 +114,8 @@ function Row({ label, value, mono, copyable }: { label: string; value: string; m
 }
 
 export function OverviewPanel({ entry }: Props) {
-  const statusColor = entry.status >= 200 && entry.status < 300 ? '#16a34a'
-    : entry.status >= 400 ? '#dc2626' : '#d97706';
+  const statusCls = entry.status >= 200 && entry.status < 300 ? 'status-success'
+    : entry.status >= 400 ? 'status-danger' : 'status-warning';
 
   return (
     <div className="overview-panel kv-scroll">
@@ -126,7 +126,7 @@ export function OverviewPanel({ entry }: Props) {
         <div className="overview-row">
           <span className="overview-label">Status</span>
           <span className="overview-value">
-            <span style={{ color: statusColor, fontWeight: 600 }}>{entry.status}</span>
+            <span className={`status-value ${statusCls}`}>{entry.status}</span>
             {entry.statusText && <span className="overview-status-text"> {entry.statusText}</span>}
           </span>
         </div>

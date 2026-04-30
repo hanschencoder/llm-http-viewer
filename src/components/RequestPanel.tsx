@@ -45,7 +45,7 @@ export function RequestPanel({ body, url, headers, queryString, cookies, selecte
         </div>
         {tab === 'body' && (
           <button
-            className="extract-prompt-btn"
+            className="btn-secondary"
             onClick={handleExtract}
             disabled={!format}
             title={format ? `提取 ${format === 'openai' ? 'OpenAI' : 'Anthropic'} 提示词` : '未检测到 OpenAI/Anthropic 格式'}

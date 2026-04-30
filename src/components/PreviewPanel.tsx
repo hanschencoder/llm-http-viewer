@@ -75,7 +75,7 @@ export function PreviewPanel({ title, subtitle, content, emptyText, hideTitle }:
           <div className="preview-toolbar-actions">
             {isMarkdown && headings.length > 0 && (
               <button
-                className={`toc-toggle-btn ${tocOpen ? 'active' : ''}`}
+                className={`btn-secondary ${tocOpen ? 'active' : ''}`}
                 onClick={() => setTocOpen(v => !v)}
                 title={tocOpen ? '隐藏目录' : '显示目录'}
               >
@@ -84,7 +84,7 @@ export function PreviewPanel({ title, subtitle, content, emptyText, hideTitle }:
             )}
             {content && (
               <button
-                className={`copy-btn ${copied ? 'copied' : ''}`}
+                className={`btn-secondary ${copied ? 'copied' : ''}`}
                 onClick={handleCopy}
                 title="复制全部文本"
               >
