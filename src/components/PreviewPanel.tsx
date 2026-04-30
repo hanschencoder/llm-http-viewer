@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
+import { Allotment } from 'allotment';
 import { escapeHtml } from '../utils/markdown';
 import { TocSidebar } from './TocSidebar';
 
@@ -95,27 +96,48 @@ export function PreviewPanel({ title, subtitle, content, emptyText, hideTitle }:
         </div>
       )}
       <div className="preview-body">
-        {showToc && (
-          <TocSidebar headings={headings} onScroll={scrollToHeading} />
-        )}
-        <div className="preview-content" ref={contentRef}>
-          {content ? (
-            isJson(content) ? (
-              <pre className="raw-content">{escapeHtml(content)}</pre>
-            ) : (
-              <div className="markdown-body">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  rehypePlugins={[rehypeHighlight]}
-                >
-                  {content}
-                </ReactMarkdown>
+        {showToc ? (
+          <Allotment>
+            <Allotment.Pane preferredSize={240} minSize={100}>
+              <TocSidebar headings={headings} onScroll={scrollToHeading} />
+            </Allotment.Pane>
+            <Allotment.Pane minSize={200}>
+              <div className="preview-content" ref={contentRef}>
+                {isJson(content!) ? (
+                  <pre className="raw-content">{escapeHtml(content!)}</pre>
+                ) : (
+                  <div className="markdown-body">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeHighlight]}
+                    >
+                      {content!}
+                    </ReactMarkdown>
+                  </div>
+                )}
               </div>
-            )
-          ) : (
-            <div className="preview-empty">{emptyText ?? '暂无内容'}</div>
-          )}
-        </div>
+            </Allotment.Pane>
+          </Allotment>
+        ) : (
+          <div className="preview-content" ref={contentRef}>
+            {content ? (
+              isJson(content) ? (
+                <pre className="raw-content">{escapeHtml(content)}</pre>
+              ) : (
+                <div className="markdown-body">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeHighlight]}
+                  >
+                    {content}
+                  </ReactMarkdown>
+                </div>
+              )
+            ) : (
+              <div className="preview-empty">{emptyText ?? '暂无内容'}</div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

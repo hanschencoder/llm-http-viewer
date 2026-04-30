@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { ParsedEntry } from '../types';
 
 interface Props {
@@ -9,12 +8,12 @@ interface Props {
 
 function methodColor(method: string): string {
   switch (method.toUpperCase()) {
-    case 'GET': return '#61affe';
-    case 'POST': return '#49cc90';
-    case 'PUT': return '#fca130';
-    case 'DELETE': return '#f93e3e';
-    case 'PATCH': return '#50e3c2';
-    default: return '#999';
+    case 'GET': return 'var(--color-method-get)';
+    case 'POST': return 'var(--color-method-post)';
+    case 'PUT': return 'var(--color-method-put)';
+    case 'DELETE': return 'var(--color-method-delete)';
+    case 'PATCH': return 'var(--color-method-patch)';
+    default: return 'var(--color-text-muted)';
   }
 }
 
@@ -36,30 +35,10 @@ function truncateUrl(url: string, maxLen = 60): string {
 }
 
 export function EntryList({ entries, selectedId, onSelect }: Props) {
-  const [filter, setFilter] = useState('');
-
-  const filtered = filter
-    ? entries.filter(
-        (e) =>
-          e.url.toLowerCase().includes(filter.toLowerCase()) ||
-          e.method.toLowerCase().includes(filter.toLowerCase())
-      )
-    : entries;
-
   return (
     <div className="entry-list">
-      <div className="entry-list-header">
-        <input
-          className="entry-filter"
-          type="text"
-          placeholder="过滤请求..."
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        />
-        <span className="entry-count">{filtered.length}/{entries.length}</span>
-      </div>
       <div className="entry-list-body">
-        {filtered.map((entry) => (
+        {entries.map((entry) => (
           <div
             key={entry.id}
             className={`entry-item ${entry.id === selectedId ? 'selected' : ''}`}

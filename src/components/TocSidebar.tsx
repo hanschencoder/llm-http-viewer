@@ -1,4 +1,4 @@
-import { useState } from 'react';
+
 
 interface TocNode {
   index: number;
@@ -28,25 +28,16 @@ function buildTocTree(headings: { level: number; text: string }[]): TocNode[] {
 }
 
 function TocNodeItem({ node, depth, onScroll }: { node: TocNode; depth: number; onScroll: (i: number) => void }) {
-  const [expanded, setExpanded] = useState(depth < 1);
   const hasChildren = node.children.length > 0;
 
   return (
     <div className="toc-node">
       <div className="toc-row">
-        <button
-          className="toc-expand-btn"
-          style={{ visibility: hasChildren ? 'visible' : 'hidden' }}
-          onClick={() => setExpanded(v => !v)}
-          tabIndex={hasChildren ? 0 : -1}
-        >
-          {expanded ? '▾' : '▸'}
-        </button>
         <button className="toc-label-btn" onClick={() => onScroll(node.index)} title={node.text}>
           {node.text}
         </button>
       </div>
-      {hasChildren && expanded && (
+      {hasChildren && (
         <div className="toc-children">
           {node.children.map((child, i) => (
             <TocNodeItem key={i} node={child} depth={depth + 1} onScroll={onScroll} />

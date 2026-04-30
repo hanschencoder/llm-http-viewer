@@ -76,46 +76,58 @@ function App() {
         <Allotment separator>
           {/* Left pane */}
           <Allotment.Pane minSize={200} preferredSize="35%">
-            <Allotment separator vertical>
-              <Allotment.Pane minSize={80} preferredSize="50%">
-                <EntryList
-                  entries={entries}
-                  selectedId={selectedEntry?.id ?? null}
-                  onSelect={handleSelectEntry}
-                />
-              </Allotment.Pane>
-              <Allotment.Pane minSize={80}>
-                <RequestPanel
-                  body={selectedEntry?.requestBody ?? null}
-                  url={selectedEntry?.url ?? ''}
-                  headers={selectedEntry?.requestHeaders ?? []}
-                  queryString={selectedEntry?.queryString ?? []}
-                  cookies={selectedEntry?.requestCookies ?? []}
-                  selectedPath={selectedPath}
-                  onValueSelect={handleValueSelect}
-                />
-              </Allotment.Pane>
-            </Allotment>
+            <div style={{ height: '100%', paddingRight: '4px' }}>
+              <Allotment separator vertical>
+                <Allotment.Pane minSize={80} preferredSize="50%">
+                  <div style={{ height: '100%', paddingBottom: '4px' }}>
+                    <EntryList
+                      entries={entries}
+                      selectedId={selectedEntry?.id ?? null}
+                      onSelect={handleSelectEntry}
+                    />
+                  </div>
+                </Allotment.Pane>
+                <Allotment.Pane minSize={80}>
+                  <div style={{ height: '100%', paddingTop: '4px' }}>
+                    <RequestPanel
+                      body={selectedEntry?.requestBody ?? null}
+                      url={selectedEntry?.url ?? ''}
+                      headers={selectedEntry?.requestHeaders ?? []}
+                      queryString={selectedEntry?.queryString ?? []}
+                      cookies={selectedEntry?.requestCookies ?? []}
+                      selectedPath={selectedPath}
+                      onValueSelect={handleValueSelect}
+                    />
+                  </div>
+                </Allotment.Pane>
+              </Allotment>
+            </div>
           </Allotment.Pane>
 
           {/* Right pane */}
           <Allotment.Pane minSize={300}>
-            {hasSelection ? (
-              <Allotment separator vertical>
-                <Allotment.Pane minSize={80} preferredSize="67%">
-                  <PreviewPanel
-                    title="Selected Value"
-                    subtitle={selectedPath ?? undefined}
-                    content={selectedValue}
-                  />
-                </Allotment.Pane>
-                <Allotment.Pane minSize={80}>
-                  {responsePanel}
-                </Allotment.Pane>
-              </Allotment>
-            ) : (
-              responsePanel
-            )}
+            <div style={{ height: '100%', paddingLeft: '4px' }}>
+              {hasSelection ? (
+                <Allotment separator vertical>
+                  <Allotment.Pane minSize={80} preferredSize="67%">
+                    <div style={{ height: '100%', paddingBottom: '4px' }}>
+                      <PreviewPanel
+                        title="Selected Value"
+                        subtitle={selectedPath ?? undefined}
+                        content={selectedValue}
+                      />
+                    </div>
+                  </Allotment.Pane>
+                  <Allotment.Pane minSize={80}>
+                    <div style={{ height: '100%', paddingTop: '4px' }}>
+                      {responsePanel}
+                    </div>
+                  </Allotment.Pane>
+                </Allotment>
+              ) : (
+                responsePanel
+              )}
+            </div>
           </Allotment.Pane>
         </Allotment>
       </div>
