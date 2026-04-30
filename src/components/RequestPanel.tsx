@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { JsonTreeView } from './JsonTreeView';
 import { KVTable, CookieTable } from './KVTable';
+import { detectFormat, extractPrompt } from '../utils/prompt-extractor';
 import type { HarNameValuePair, HarCookie } from '../types';
 
 interface Props {
   body: unknown;
+  url: string;
   headers: HarNameValuePair[];
   queryString: HarNameValuePair[];
   cookies: HarCookie[];
@@ -14,8 +16,14 @@ interface Props {
 
 type Tab = 'body' | 'headers' | 'query' | 'cookies';
 
-export function RequestPanel({ body, headers, queryString, cookies, selectedPath, onValueSelect }: Props) {
+export function RequestPanel({ body, url, headers, queryString, cookies, selectedPath, onValueSelect }: Props) {
   const [tab, setTab] = useState<Tab>('body');
+  const format = useMemo(() => detectFormat(body, url), [body, url]);
+
+  function handleExtract() {
+    const markdown = extractPrompt(body, url);
+    if (markdown) onValueSelect('Prompts', markdown);
+  }
 
   return (
     <div className="request-panel">
@@ -35,6 +43,16 @@ export function RequestPanel({ body, headers, queryString, cookies, selectedPath
             Cookies{cookies.length > 0 && <span className="req-tab-count">{cookies.length}</span>}
           </button>
         </div>
+        {tab === 'body' && (
+          <button
+            className="extract-prompt-btn"
+            onClick={handleExtract}
+            disabled={!format}
+            title={format ? `提取 ${format === 'openai' ? 'OpenAI' : 'Anthropic'} 提示词` : '未检测到 OpenAI/Anthropic 格式'}
+          >
+            提取提示词
+          </button>
+        )}
       </div>
 
       <div className="request-content">

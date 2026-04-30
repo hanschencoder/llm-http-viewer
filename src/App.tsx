@@ -87,6 +87,7 @@ function App() {
               <Allotment.Pane minSize={80}>
                 <RequestPanel
                   body={selectedEntry?.requestBody ?? null}
+                  url={selectedEntry?.url ?? ''}
                   headers={selectedEntry?.requestHeaders ?? []}
                   queryString={selectedEntry?.queryString ?? []}
                   cookies={selectedEntry?.requestCookies ?? []}
