@@ -32,6 +32,62 @@
 - **主题切换**：11 个预设配色（浅色：GitHub / Atom / Xcode / IntelliJ；深色：GitHub Dark / Dimmed / Tokyo Night / Nord / Rosé Pine / One Dark / Night Owl）
 - 所有分栏均可拖拽调整大小
 
+## 提取提示词
+
+在 Request 面板 Body tab 点击 **提取提示词** 按钮，工具会将请求体中的原始 JSON 转换为带层级标题的可读 Markdown，并在右侧预览面板展示，同时生成目录侧边栏方便导航。
+
+**格式自动识别**
+
+根据请求 URL 和请求体结构自动区分：
+- `api.anthropic.com/v1/messages` → Anthropic 格式
+- `/v1/chat/completions` → OpenAI 格式
+
+**输出结构**
+
+Anthropic 格式输出：
+
+```
+# system
+## Prompts 1
+（system prompt 文本，内部标题自动向下偏移）
+
+---
+
+# messages
+## user
+（内容）
+
+---
+
+## assistant
+（内容）
+
+---
+
+# tools
+## tool_name
+### description
+### input_schema
+​```json
+{ ... }
+​```
+```
+
+OpenAI 格式结构相同，差异是 system 作为 `role: system` 的消息出现在 messages 里，而非独立字段。
+
+**支持的内容类型**
+
+| content type | 渲染方式 |
+|---|---|
+| `text` | 原样渲染 Markdown；内部已有标题自动向下偏移，不打乱层级 |
+| `image_url` | `![image](url)` |
+| `image`（base64）| `![image](data:image/...;base64,...)` |
+| `thinking` | 渲染为文本段落 |
+| `tool_use` | `[工具调用: name]` |
+| `tool_result` | `[工具结果]` |
+
+提取结果会完整保留 Claude Code 等工具发送的所有上下文，包括多段 system prompt、few-shot 示例、tool schema 定义，可一键复制全文。
+
 ## 前置条件
 Node.js 18+
 ## 快速开始
