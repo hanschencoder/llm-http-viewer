@@ -60,16 +60,26 @@ export function PreviewPanel({ title, subtitle, content, emptyText, hideTitle }:
     if (!contentRef.current) return;
     const targetHeading = headings[index];
     if (!targetHeading) return;
-    // Count which occurrence of this text among previous headings (handles duplicates)
     const occurrenceIndex = headings.slice(0, index).filter(h => h.text === targetHeading.text).length;
-    // Match against DOM nodes by text, skipping code-block pseudo-headings not rendered as <h>
     const domNodes = Array.from(contentRef.current.querySelectorAll('h1,h2,h3,h4,h5,h6'))
       .filter(n => n.textContent?.trim() === targetHeading.text);
     const target = domNodes[occurrenceIndex] as HTMLElement | undefined;
     if (!target) return;
     const container = contentRef.current;
     const paddingTop = parseFloat(getComputedStyle(container).paddingTop) || 0;
-    container.scrollTop += target.getBoundingClientRect().top - container.getBoundingClientRect().top - paddingTop;
+    const targetScrollTop = container.scrollTop + target.getBoundingClientRect().top - container.getBoundingClientRect().top - paddingTop;
+    const startScrollTop = container.scrollTop;
+    const delta = targetScrollTop - startScrollTop;
+    if (delta === 0) return;
+    const duration = Math.min(Math.max(Math.abs(delta) * 0.3, 80), 250);
+    const startTime = performance.now();
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+    const step = (now: number) => {
+      const t = Math.min((now - startTime) / duration, 1);
+      container.scrollTop = startScrollTop + delta * easeOutCubic(t);
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
   }, [headings]);
 
   const showToolbar = !hideTitle || !!content;
