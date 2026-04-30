@@ -102,7 +102,7 @@ function App() {
           <Allotment.Pane minSize={300}>
             {hasSelection ? (
               <Allotment separator vertical>
-                <Allotment.Pane minSize={80} preferredSize="40%">
+                <Allotment.Pane minSize={80} preferredSize="67%">
                   <PreviewPanel
                     title="Selected Value"
                     subtitle={selectedPath ?? undefined}
