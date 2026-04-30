@@ -6,6 +6,8 @@
 
 **LLM HTTP Viewer** 就是为了让这件事变得可行而做的。它把 HAR 文件解析成交互式界面，让你能清晰地审查每一个 LLM 请求的完整内容。
 
+![截图](docs/screenshot.jpg)
+
 **典型使用场景：**
 - **研究 AI 编程工具的工作方式**：用 Proxyman / Charles 等抓包工具捕获 Claude Code、Cursor、Copilot 的 API 流量，导出 HAR 后逐条查看 system prompt、tool schema、messages 结构，理解 agent 的完整工作流程
 - **观察 agent 多轮对话链**：一个编程任务往往触发十几轮 LLM 调用，通过请求列表可以按时序还原每一步决策——读了哪些文件、执行了哪些命令、如何根据工具返回结果调整下一步
