@@ -21,12 +21,14 @@
   - **提取提示词**：自动识别 OpenAI / Anthropic 格式，一键将 system、messages、tools 整合为带层级标题的 Markdown，支持 thinking、图片、工具调用等内容类型
 - **Response 面板**
   - Overview：完整 URL、协议版本、状态码、请求/响应体大小、时序可视化（DNS / Connect / SSL / TTFB / Download）
-  - Body：流式响应自动检测 SSE 格式（兼容 OpenAI 和 Anthropic），支持原始分块和完整拼接视图；非流式内容渲染 Markdown
+  - Body：流式响应自动检测 SSE 格式（兼容 OpenAI 和 Anthropic），重建视图自动提取 Thinking / Tool Use / Response 分块并带标题分节展示；支持切换原始分块视图；非流式内容渲染 Markdown
   - Headers / Cookies
 - **Markdown 预览**：带目录侧边栏（树形结构，支持折叠展开、点击跳转），一键复制全文
 - **主题切换**：11 个预设配色（浅色：GitHub / Atom / Xcode / IntelliJ；深色：GitHub Dark / Dimmed / Tokyo Night / Nord / Rosé Pine / One Dark / Night Owl）
 - 所有分栏均可拖拽调整大小
 
+## 前置条件
+Node.js 18+
 ## 快速开始
 ```bash
 npm install
