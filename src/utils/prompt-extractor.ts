@@ -44,7 +44,7 @@ function offsetHeadings(text: string, offset: number): string {
 }
 
 function renderPart(part: ContentPart, headingLevel: number, textIndex?: number): string {
-  const label = part.type === 'text' && textIndex !== undefined ? `提示词 ${textIndex}` : part.type;
+  const label = part.type === 'text' && textIndex !== undefined ? `Prompts ${textIndex}` : part.type;
   const typeLabel = `${h(headingLevel)} ${label}`;
   if (part.type === 'text') {
     return `${typeLabel}\n\n${offsetHeadings(str(part.text), headingLevel)}`;
@@ -108,9 +108,9 @@ function renderTools(tools: unknown[], format: PromptFormat, headingLevel: numbe
       schema = t.input_schema;
     }
 
-    const parts: string[] = [`${h(headingLevel)} ${name}`];
-    if (description) parts.push(`${h(headingLevel + 1)} description\n\n${description}`);
-    if (schema) parts.push(`${h(headingLevel + 1)} ${schemaKey}\n\n\`\`\`json\n${JSON.stringify(schema, null, 2)}\n\`\`\``);
+    const parts: string[] = [`${h(headingLevel + 1)} ${name}`];
+    if (description) parts.push(`${h(headingLevel + 2)} description\n\n${offsetHeadings(description, headingLevel + 2)}`);
+    if (schema) parts.push(`${h(headingLevel + 2)} ${schemaKey}\n\n\`\`\`json\n${JSON.stringify(schema, null, 2)}\n\`\`\``);
     return parts.join('\n\n');
   });
 

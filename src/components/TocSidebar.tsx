@@ -27,8 +27,8 @@ function buildTocTree(headings: { level: number; text: string }[]): TocNode[] {
   return roots;
 }
 
-function TocNodeItem({ node, onScroll }: { node: TocNode; onScroll: (i: number) => void }) {
-  const [expanded, setExpanded] = useState(true);
+function TocNodeItem({ node, depth, onScroll }: { node: TocNode; depth: number; onScroll: (i: number) => void }) {
+  const [expanded, setExpanded] = useState(depth < 1);
   const hasChildren = node.children.length > 0;
 
   return (
@@ -49,7 +49,7 @@ function TocNodeItem({ node, onScroll }: { node: TocNode; onScroll: (i: number) 
       {hasChildren && expanded && (
         <div className="toc-children">
           {node.children.map((child, i) => (
-            <TocNodeItem key={i} node={child} onScroll={onScroll} />
+            <TocNodeItem key={i} node={child} depth={depth + 1} onScroll={onScroll} />
           ))}
         </div>
       )}
@@ -68,7 +68,7 @@ export function TocSidebar({ headings, onScroll }: Props) {
   return (
     <nav className="toc-sidebar">
       {roots.map((node, i) => (
-        <TocNodeItem key={i} node={node} onScroll={onScroll} />
+        <TocNodeItem key={i} node={node} depth={0} onScroll={onScroll} />
       ))}
     </nav>
   );
