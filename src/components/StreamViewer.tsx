@@ -70,6 +70,11 @@ export function StreamViewer({ responseBody, hideTitle }: Props) {
               <div key={chunk.index} className="chunk-card">
                 <div className="chunk-header">
                   <span className="chunk-index">#{chunk.index}</span>
+                  {chunk.contentType && (
+                    <span className={`chunk-type-badge ${chunk.contentType}`}>
+                      {chunk.contentType === 'thinking' ? 'Thinking' : chunk.contentType === 'tool' ? 'Tool' : 'Content'}
+                    </span>
+                  )}
                   {chunk.extractedText && (
                     <span className="chunk-text-preview">
                       {chunk.extractedText.length > 60

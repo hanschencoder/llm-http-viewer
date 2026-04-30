@@ -1048,6 +1048,29 @@
   color: var(--color-accent);
 }
 
+.chunk-type-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 3px;
+  line-height: 1.4;
+}
+
+.chunk-type-badge.thinking {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+
+.chunk-type-badge.content {
+  background: var(--color-accent-bg);
+  color: var(--color-accent-text);
+}
+
+.chunk-type-badge.tool {
+  background: var(--color-success-bg, #dcfce7);
+  color: var(--color-success-text, #166534);
+}
+
 .chunk-text-preview {
   font-size: var(--font-size-sm);
   color: var(--color-success);

@@ -107,6 +107,7 @@ export interface StreamChunk {
   rawData: string;
   parsedData?: unknown;
   extractedText?: string;
+  contentType?: 'thinking' | 'content' | 'tool';
 }
 
 export interface StreamParseResult {

@@ -25,8 +25,13 @@
   --color-accent-bg-strong: rgba(74, 144, 217, 0.15);
   /* ── Status ── */
   --color-success:         #16a34a;
+  --color-success-bg:      #dcfce7;
+  --color-success-text:    #166534;
   --color-warning:         #d97706;
+  --color-warning-bg:      #fef3c7;
+  --color-warning-text:    #92400e;
   --color-danger:          #dc2626;
+  --color-accent-text:     #1e40af;
   /* ── JSON ── */
   --color-json-key:        #5b21b6;
   --color-json-string:     #15803d;
