@@ -23,7 +23,7 @@ export function parseStreamResponse(body: string, forceMode?: 'sse' | 'raw'): St
 }
 
 function detectMode(body: string): 'sse' | 'raw' {
-  if (/^data:\s/m.test(body)) return 'sse';
+  if (/^data:/m.test(body)) return 'sse';
   return 'raw';
 }
 
@@ -54,19 +54,17 @@ function parseSSE(body: string): StreamParseResult {
         continue;
       }
 
-      let parsed: unknown;
-      try {
-        parsed = JSON.parse(data);
-      } catch {
+      const effective = resolveSSEData(data);
+      if (effective === null) {
         chunks.push({ index: chunkIndex++, rawData: data });
         continue;
       }
 
       // Handle tool accumulation (streaming partial_json / arguments)
-      const toolResult = handleToolAccumulation(parsed, toolAccumulator);
+      const toolResult = handleToolAccumulation(effective, toolAccumulator);
       if (toolResult) segments.push(toolResult);
 
-      const extracted = extractDelta(parsed);
+      const extracted = extractDelta(effective);
       if (extracted) segments.push(extracted);
 
       const text = toolResult?.text ?? extracted?.text;
@@ -75,7 +73,7 @@ function parseSSE(body: string): StreamParseResult {
       chunks.push({
         index: chunkIndex++,
         rawData: data,
-        parsedData: parsed,
+        parsedData: effective,
         extractedText: text,
         contentType: type,
       });
@@ -313,6 +311,82 @@ function extractDelta(data: unknown): DeltaResult | null {
   }
 
   return null;
+}
+
+/**
+ * Resolve a raw SSE data string to the effective JSON value for delta extraction.
+ * Handles three cases:
+ *   1. Normal LLM chunk (valid JSON) → return as-is
+ *   2. Proxy-wrapped valid JSON: { headers, body: "<escaped json>", statusCodeValue } → unwrap body
+ *   3. Proxy-wrapped invalid JSON: body value has unescaped quotes → bracket-match to extract body
+ */
+function resolveSSEData(data: string): unknown | null {
+  try {
+    const parsed = JSON.parse(data);
+    return tryUnwrapBody(parsed) ?? parsed;
+  } catch {
+    // Outer JSON is malformed (e.g. body field contains unescaped quotes)
+    return tryExtractBodyFromMalformed(data);
+  }
+}
+
+/** Unwrap proxy-wrapped format when outer JSON is valid */
+function tryUnwrapBody(data: unknown): unknown | null {
+  if (typeof data !== 'object' || data === null) return null;
+  const obj = data as Record<string, unknown>;
+  if (!('statusCodeValue' in obj || 'statusCode' in obj)) return null;
+  // body is already a parsed object (server embedded it inline)
+  if (typeof obj.body === 'object' && obj.body !== null) return obj.body;
+  // body is a JSON string
+  if (typeof obj.body === 'string') {
+    try {
+      return JSON.parse(obj.body);
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
+/**
+ * Fallback for malformed proxy format where the body JSON is embedded without quote-escaping.
+ * Uses bracket matching to extract the raw JSON value of the "body" key.
+ */
+function tryExtractBodyFromMalformed(data: string): unknown | null {
+  if (!data.includes('"statusCodeValue"') && !data.includes('"statusCode"')) return null;
+
+  const bodyKeyMatch = data.match(/"body"\s*:\s*"?/);
+  if (!bodyKeyMatch || bodyKeyMatch.index === undefined) return null;
+
+  const bodyStart = bodyKeyMatch.index + bodyKeyMatch[0].length;
+  if (data.startsWith('[DONE]', bodyStart)) return null;
+  if (data[bodyStart] !== '{' && data[bodyStart] !== '[') return null;
+
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  let end = -1;
+
+  for (let i = bodyStart; i < data.length; i++) {
+    const c = data[i];
+    if (escape) { escape = false; continue; }
+    if (c === '\\' && inString) { escape = true; continue; }
+    if (c === '"') { inString = !inString; continue; }
+    if (!inString) {
+      if (c === '{' || c === '[') depth++;
+      else if (c === '}' || c === ']') {
+        depth--;
+        if (depth === 0) { end = i + 1; break; }
+      }
+    }
+  }
+
+  if (end === -1) return null;
+  try {
+    return JSON.parse(data.slice(bodyStart, end));
+  } catch {
+    return null;
+  }
 }
 
 /** Try to extract readable text from a non-streaming LLM response body */

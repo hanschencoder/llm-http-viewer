@@ -68,7 +68,7 @@ function parseEntry(entry: HarEntry, index: number): ParsedEntry {
 }
 
 function detectStreaming(entry: HarEntry, decodedBody: string): boolean {
-  if (/^data:\s/m.test(decodedBody) && decodedBody.includes('\n\n')) {
+  if (/^data:/m.test(decodedBody) && decodedBody.includes('\n\n')) {
     return true;
   }
   const url = entry.request.url.toLowerCase();
