@@ -53,6 +53,25 @@ function App() {
     setSelectedValue(value);
   }, []);
 
+  const handleBodyDecode = useCallback((decodedBody: unknown) => {
+    if (!selectedEntry) return;
+    const rawBody = selectedEntry.requestBody as string;
+    const updated: ParsedEntry = { ...selectedEntry, requestBody: decodedBody, rawRequestBody: rawBody };
+    setSelectedEntry(updated);
+    setEntries(prev => prev.map(e => e.id === updated.id ? updated : e));
+  }, [selectedEntry]);
+
+  const handleBodyRestore = useCallback(() => {
+    if (!selectedEntry?.rawRequestBody) return;
+    const updated: ParsedEntry = {
+      ...selectedEntry,
+      requestBody: selectedEntry.rawRequestBody,
+      rawRequestBody: undefined,
+    };
+    setSelectedEntry(updated);
+    setEntries(prev => prev.map(e => e.id === updated.id ? updated : e));
+  }, [selectedEntry]);
+
   if (entries.length === 0) {
     return (
       <div className="app">
@@ -96,6 +115,9 @@ function App() {
                       queryString={selectedEntry?.queryString ?? []}
                       cookies={selectedEntry?.requestCookies ?? []}
                       selectedPath={selectedPath}
+                      isDecoded={!!selectedEntry?.rawRequestBody}
+                      onBodyDecode={handleBodyDecode}
+                      onBodyRestore={handleBodyRestore}
                       onValueSelect={handleValueSelect}
                     />
                   </div>
