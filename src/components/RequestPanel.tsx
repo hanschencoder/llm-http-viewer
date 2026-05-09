@@ -42,6 +42,12 @@ export function RequestPanel({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showDecodeMenu]);
 
+  // Clear decode error and menu when body changes (entry switch)
+  useEffect(() => {
+    setDecodeError(null);
+    setShowDecodeMenu(false);
+  }, [body]);
+
   function handleExtract() {
     const markdown = extractPrompt(body, url);
     if (markdown) onValueSelect('Prompts', markdown);
@@ -85,7 +91,7 @@ export function RequestPanel({
 
         {tab === 'body' && (
           <div className="toolbar-actions">
-            {typeof body === 'string' && !isDecoded && (
+            {typeof body === 'string' && !isDecoded && DECODERS.length > 0 && (
               <div className="decode-dropdown-wrapper" ref={decodeMenuRef}>
                 <button
                   className="btn-secondary"
