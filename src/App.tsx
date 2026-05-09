@@ -73,11 +73,11 @@ function App() {
         <ThemePicker current={theme} onChange={handleThemeChange} />
       </div>
       <div className="app-body">
-        <Allotment separator>
+        <Allotment separator={false}>
           {/* Left pane */}
           <Allotment.Pane minSize={200} preferredSize="35%">
             <div style={{ height: '100%', paddingRight: '4px' }}>
-              <Allotment separator vertical>
+              <Allotment separator={false} vertical>
                 <Allotment.Pane minSize={80} preferredSize="50%">
                   <div style={{ height: '100%', paddingBottom: '4px' }}>
                     <EntryList
@@ -108,7 +108,7 @@ function App() {
           <Allotment.Pane minSize={300}>
             <div style={{ height: '100%', paddingLeft: '4px' }}>
               {hasSelection ? (
-                <Allotment separator vertical>
+                <Allotment separator={false} vertical>
                   <Allotment.Pane minSize={80} preferredSize="67%">
                     <div style={{ height: '100%', paddingBottom: '4px' }}>
                       <PreviewPanel
