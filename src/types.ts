@@ -88,6 +88,7 @@ export interface ParsedEntry {
   startedDateTime: string;
   httpVersion: string;
   requestBody: unknown;
+  rawRequestBody?: string;
   requestBodySize: number;
   responseBody: string;
   responseBodySize: number;
